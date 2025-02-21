@@ -9,7 +9,7 @@ const InfoBox = ({
 }
 
 ) => {
-    console.log("info box server testing", buttonInfo)
+
     return (
         <div className={` ${backgroundColor} p-6 rounded-lg shadow-md`}>
             <h2 className={`${textColor} text-2xl font-bold`}>{heading}</h2>
