@@ -9,24 +9,27 @@ export const authOptions = {
             clientId: process.env.GOOGLE_CLIENT_ID,
             clientSecret: process.env.GOOGLE_CLIENT_SECRET,
         }),
-    ]
-    /*,
+    ],
     callbacks: {
         //Invoked on successful signin
         async signIn({ profile }) {
             //1. Connect to Db
+            console.log("Inside sigIn")
             await connectDb();
             //2. Check if the user exist
             const userExist = await User.findOne({ email: profile.email })
             //3. If not create/add user in the DB 
             if (!userExist) {
+                console.log('Inside user does not exist', profile)
+                console.log("profile.name.slice(0, 20)--", profile.name.slice(0, 20))
                 // Truncate if user name is too long
-                username = profile.username.slice(0, 20)
+                //const user = profile.name.slice(0, 20) 
                 User.create({
                     email: profile.email,
-                    username,
+                    username: profile.name.slice(0, 20),
                     image: profile.picture
                 })
+                console.log("After User account creation")
             }
 
             //4. Return True to allow sign in
@@ -41,5 +44,5 @@ export const authOptions = {
             //3. Return 
             return session
         }
-    }*/
+    }
 }
