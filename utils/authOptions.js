@@ -3,21 +3,14 @@ import GoogleProvider from 'next-auth/providers/google';
 import connectDb from '@/config/database';
 import User from '@/models/User';
 
-export const AuthOptions = {
+export const authOptions = {
     providers: [
         GoogleProvider({
             clientId: process.env.GOOGLE_CLIENT_ID,
-            clientSecret: process.env.GOOGLE_SECRET_ID,
-            authorization: {
-                params: {
-                    prompt: "consent",
-                    access_type: "offline",
-                    response_type: "code"
-                }
-            }
-
-        })
-    ],
+            clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+        }),
+    ]
+    /*,
     callbacks: {
         //Invoked on successful signin
         async signIn({ profile }) {
@@ -48,5 +41,5 @@ export const AuthOptions = {
             //3. Return 
             return session
         }
-    }
+    }*/
 }
