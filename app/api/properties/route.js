@@ -1,5 +1,7 @@
 import connectDB from '@/config/database';
 import Property from '@/models/Property';
+import { getSessionUser } from '@/utils/getSessionUser';
+import cloudinary from '@/config/cloudinary';
 
 export const GET = async (request) => {
     try {
@@ -16,6 +18,14 @@ export const GET = async (request) => {
 
 export const POST = async (request) => {
     try {
+        await connectDB();
+        console.log("Inside Route for Pst images --", request)
+        const sessionUser = await getSessionUser()
+
+        if (!sessionUser || !sessionUser.userId) {
+            return new Response('User ID is required ', { status: 401 })
+        }
+        const { userId } = sessionUser;
         const formData = await request.formData()
         const amenities = formData.getAll('amenities')
         const images = formData
@@ -23,6 +33,7 @@ export const POST = async (request) => {
             .filter((image) => image.name !== '')
 
         const propertyData = {
+
             name: formData.get("name"),
             type: formData.get("type"),
             description: formData.get("description"),
@@ -46,13 +57,35 @@ export const POST = async (request) => {
                 email: formData.get("seller_info.email"),
                 phone: formData.get("seller_info.phone")
             },
-            images
+            owner: userId,
         }
+        const imageUploadPromises = [];
 
-        console.log(propertyData)
-        return new Response(JSON.stringify({ message: 'testing post message for properties page  success' }), { status: 200 })
+        for (const image of images) {
+            const imageBuffer = await image.arrayBuffer();
+            const imageArray = Array.from(new Uint8Array(imageBuffer));
+            const imageData = Buffer.from(imageArray);
+
+            //convert the image data to base64
+            const imageBase64 = imageData.toString('base64');
+            // Make request to upload to Cloudinary
+            const result = await cloudinary.uploader.upload(
+                `data:image/png;base64,${imageBase64}`, {
+                folder: 'propertypulse'
+            });
+            imageUploadPromises.push(result.secure_url)
+
+            //wait for all images to upload 
+            const uploadedImages = await Promise.all(imageUploadPromises);
+            // Add uploaded images to the propertData object
+            propertyData.images = uploadedImages;
+        }
+        const newProperty = new Property(propertyData);
+        await newProperty.save();
+
+        return Response.redirect(`${process.env.NEXTAUTH_URL}/properties/${newProperty._id}`)
     } catch (error) {
 
-        return new Response(JSON.stringify({ message: 'Some error happend in POST call in properties route page' }), { status: 500 })
+        return new Response(JSON.stringify({ message: `Failed to add Property : ${error}` }), { status: 500 })
     }
 }

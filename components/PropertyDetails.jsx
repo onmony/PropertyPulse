@@ -8,6 +8,7 @@ import {
 } from 'react-icons/fa'
 
 const PropertyDetails = ({ property }) => {
+    console.log("Inside Property Details Page property --", property)
     return (
         <main>
             <div

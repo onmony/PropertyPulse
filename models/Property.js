@@ -18,7 +18,7 @@ const PropertySchema = new Schema({
         type: String,
 
     },
-    lcoation: {
+    location: {
         street: {
             type: String
         },
