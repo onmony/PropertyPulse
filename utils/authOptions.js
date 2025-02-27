@@ -42,6 +42,7 @@ export const authOptions = {
             //2. Assign the user id to the session 
             session.user.id = user._id.toString()
             //3. Return 
+            console.log("Before retruning  session values", session)
             return session
         }
     }

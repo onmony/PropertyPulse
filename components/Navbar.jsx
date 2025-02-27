@@ -16,6 +16,8 @@ const Navbar = () => {
     const [isProfileDropDownOpen, setIsProfileDropDownOpen] = useState(false);
     const [providers, setProvider] = useState(null);
     const pathname = usePathname();
+    const profileImage = session?.user?.image;
+
 
     useEffect(() => {
         const setAuthProviders = async () => {
@@ -26,7 +28,7 @@ const Navbar = () => {
     }, [])
 
     console.log("Providers--", providers)
-
+    console.log("image --", profileImage)
     return (
         <nav className="bg-blue-700 border-b border-blue-500">
             <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
@@ -69,6 +71,7 @@ const Navbar = () => {
                                 className="h-10 w-auto"
                                 src={logo}
                                 alt="PropertyPulse"
+
                             />
 
                             <span className="hidden md:block text-white text-2xl font-bold ml-2"
@@ -166,8 +169,11 @@ const Navbar = () => {
                                         <span className="sr-only">Open user menu</span>
                                         <Image
                                             className="h-8 w-8 rounded-full"
-                                            src={defaultProfile}
+                                            src={profileImage || defaultProfile}
                                             alt=""
+                                            width={40}
+                                            height={40}
+
                                         />
                                     </button>
                                 </div>
@@ -187,6 +193,10 @@ const Navbar = () => {
                                         role="menuitem"
                                         tabIndex="-1"
                                         id="user-menu-item-0"
+                                        onClick={() => {
+                                            setIsProfileDropDownOpen(false)
+
+                                        }}
                                     >Your Profile</Link
                                     >
                                     <Link
@@ -195,15 +205,22 @@ const Navbar = () => {
                                         role="menuitem"
                                         tabIndex="-1"
                                         id="user-menu-item-2"
+                                        onClick={() => {
+                                            setIsProfileDropDownOpen(false)
+
+                                        }}
                                     >Saved Properties</Link
                                     >
-                                    {!session && providers &&
+                                    {session && providers &&
 
                                         Object.values(providers).map(
                                             (provider, index) => (
                                                 <button
                                                     key={index}
-                                                    onClick={() => signIn(provider.id)}
+                                                    onClick={() => {
+                                                        setIsProfileDropDownOpen(false)
+                                                        signOut()
+                                                    }}
                                                     className="block px-4 py-2 text-sm text-gray-700"
                                                     role="menuitem"
                                                     tabIndex="-1"
