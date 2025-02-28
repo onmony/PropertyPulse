@@ -6,7 +6,7 @@ const PropertyImages = ({ images }) => {
         <section className='bg-blue-50 p-4'>
             <div className='container mx-auto'>
                 {images.length === 1 ? (
-                    <Image src={image[0]}
+                    <Image src={images[0]}
                         alt=''
                         className='object-cover h-[400px] mx-auto rounded-xl'
                         width={1800}

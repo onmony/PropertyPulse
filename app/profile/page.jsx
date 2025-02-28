@@ -49,12 +49,28 @@ const ProfilePage = ({ }) => {
 
     console.log("Loading State--", loading)
 
-    const handleDeleteProperty = (propertyId) => {
+    const handleDeleteProperty = async (propertyId) => {
         const confirmed = window.confirm(
             'Are you Sure you want to Delete this Property ???'
         );
         if (!confirmed) {
             return;
+        }
+        try {
+
+            console.log('-----------PropertyId : ', { propertyId })
+            const res = await fetch(`/api/properties/${propertyId}`, { method: 'DELETE' })
+            if (res.status === 200) {
+                //Remove proeprty from State
+                const updatedProperties = properties.filter((property) => property._id !== propertyId);
+                setProperties(updatedProperties);
+                alert("Property Deleted")
+            }
+            else {
+                alert('Failed to Delete Property')
+            }
+        } catch (error) {
+
         }
     };
 

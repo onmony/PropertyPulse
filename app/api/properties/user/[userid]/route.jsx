@@ -5,7 +5,7 @@ import Property from '@/models/Property';
 export const GET = async (request, { params }) => {
     try {
         await connectDB();
-        const userId = params.userid;
+        const { userid: userId } = await params;
         if (!userId) {
             return new Response("UserId is required field", { status: 400 })
         }
@@ -18,3 +18,4 @@ export const GET = async (request, { params }) => {
         return new Response("Something went wrong", { status: 500 })
     }
 }
+
